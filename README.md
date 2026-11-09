@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # RecoverScope
 
 RecoverScope is a native-first Expo React Native Android app for offline storage investigation, review-first recovery assistance, duplicate analysis, and safe cleanup. It uses TypeScript for the application layer and Expo prebuild/config plugins to generate the native Android project. The project includes an optional Unity LevelPlay bridge, hosted-checkout adapters for Flutterwave and Stripe, a separate static launch homepage, and a GitHub Actions APK workflow.
@@ -132,3 +133,7 @@ The app’s local index can contain filenames, URIs, sizes, and timestamps. Trea
 [4]: https://docs.unity.com/en-us/grow/levelplay/sdk/react/plugin-integration "Unity LevelPlay React Native plugin integration"
 [5]: https://docs.expo.dev/versions/latest/sdk/stripe/ "Expo Stripe integration guidance"
 [6]: https://support.google.com/googleplay/android-developer/answer/10467955 "Google Play all files access policy"
+=======
+# recover-scope-apk
+This is for recovering medias
+>>>>>>> 936bd4fb4929fa079f8d953ef4c872b9be3a2d4c
