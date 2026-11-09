@@ -1,0 +1,52 @@
+name: Android build
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install JavaScript dependencies
+        run: npm ci
+      - name: Configure public environment values
+        run: |
+          cat > .env <<'EOF'
+          EXPO_PUBLIC_FLUTTERWAVE_PUBLIC_KEY=${{ secrets.EXPO_PUBLIC_FLUTTERWAVE_PUBLIC_KEY }}
+          EXPO_PUBLIC_FLUTTERWAVE_CHECKOUT_URL=${{ secrets.EXPO_PUBLIC_FLUTTERWAVE_CHECKOUT_URL }}
+          EXPO_PUBLIC_STRIPE_PLUS_MONTHLY_LINK=${{ secrets.EXPO_PUBLIC_STRIPE_PLUS_MONTHLY_LINK }}
+          EXPO_PUBLIC_STRIPE_PLUS_YEARLY_LINK=${{ secrets.EXPO_PUBLIC_STRIPE_PLUS_YEARLY_LINK }}
+          EXPO_PUBLIC_STRIPE_PRO_MONTHLY_LINK=${{ secrets.EXPO_PUBLIC_STRIPE_PRO_MONTHLY_LINK }}
+          EXPO_PUBLIC_STRIPE_PRO_YEARLY_LINK=${{ secrets.EXPO_PUBLIC_STRIPE_PRO_YEARLY_LINK }}
+          EXPO_PUBLIC_UNITY_GAME_ID=${{ secrets.EXPO_PUBLIC_UNITY_GAME_ID }}
+          EXPO_PUBLIC_UNITY_REWARDED_AD_UNIT_ID=${{ secrets.EXPO_PUBLIC_UNITY_REWARDED_AD_UNIT_ID }}
+          EXPO_PUBLIC_UNITY_REWARDED_PLACEMENT=Rewarded_Android
+          EXPO_PUBLIC_UNITY_TEST_MODE=false
+          EOF
+      - name: Generate native Android project
+        run: npx expo prebuild --platform android --no-install
+      - name: Build release APK
+        working-directory: android
+        run: ./gradlew assembleRelease --no-daemon
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: recoverscope-android-apk
+          path: android/app/build/outputs/apk/release/*.apk
+          if-no-files-found: error
